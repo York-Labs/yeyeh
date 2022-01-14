@@ -44,12 +44,12 @@ async def generate_sysinfo(workdir):
     info['disk'] = (f"{bytes2human(du.used)} / {bytes2human(du.total)} "
                     f"({du.percent}%)")
     if dio:
-        info['disk io'] = (f"R {bytes2human(dio.read_bytes)} | "
-                           f"W {bytes2human(dio.write_bytes)}")
+        info['disk io'] = (f"读取 {bytes2human(dio.read_bytes)} | "
+                           f"写入 {bytes2human(dio.write_bytes)}")
     # Network
     nio = psutil.net_io_counters()
-    info['net io'] = (f"TX {bytes2human(nio.bytes_sent)} | "
-                      f"RX {bytes2human(nio.bytes_recv)}")
+    info['net io'] = (f"发送 {bytes2human(nio.bytes_sent)} | "
+                      f"接收 {bytes2human(nio.bytes_recv)}")
     # Sensors
     sensors_temperatures = psutil.sensors_temperatures()
     if sensors_temperatures:
@@ -85,7 +85,7 @@ async def generate_sysinfo(workdir):
                    & ~filters.via_bot
                    & filters.regex("^!sysinfo$"))
 async def get_sysinfo(client, m):
-    response = "**System Information**:\n"
+    response = "**系统信息**:\n"
     m_reply = await m.reply_text(f"{response}`...`")
     response += await generate_sysinfo(client.workdir)
     await m_reply.edit_text(response)
