@@ -1,4 +1,4 @@
-Pyrogram
+Pyrogram==1.2.5
 TgCrypto
 ffmpeg-python
 psutil
