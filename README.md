@@ -1,21 +1,21 @@
 # Telegram Voice Chat UserBot
 
-A Telegram UserBot to Play Audio in Voice Chats.
+用于在语音聊天中播放音频的 Telegram UserBot。
 
-This is also the source code of the userbot which is being used for playing DJ/Live Sets music in [VC DJ/Live Sets](https://t.me/VCSets) group.
+这也是用于播放 [VC DJ/Live Sets](https://t.me/VCSets) 中的 DJ/Live Sets 音乐的 userbot 的源代码。
 
-Made with [tgcalls](https://github.com/MarshalX/tgcalls) and [Pyrogram Smart Plugin](https://docs.pyrogram.org/topics/smart-plugins)
+使用 [tgcalls](https://github.com/MarshalX/tgcalls) 和 [Pyrogram Smart Plugin](https://docs.pyrogram.org/topics/smart-plugins) 制作
 
-It's recommended to use [tgmusicbot](https://github.com/callsmusic/tgmusicbot) along with this userbot.
+建议将 [tgmusicbot](https://github.com/callsmusic/tgmusicbot) 与此用户机器人一起使用。
 
-## Deploy to Heroku
+## 部署到 Heroku
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/callsmusic/tgvc-userbot/tree/dev)
 
-- Session string can be exported by using Pyrogram
-  ```
-  # pip install Pyrogram TgCrypto
-  from pyrogram import Client
+- 会话字符串可以使用 Pyrogram 导出
+   ```
+   # pip install Pyrogram TgCrypto
+   from pyrogram import Client
 
   api_id = 1234567
   api_hash = "0123456789abcdef0123456789abcdef"
@@ -25,97 +25,96 @@ It's recommended to use [tgmusicbot](https://github.com/callsmusic/tgmusicbot) a
       s_file.write(session_string)
       print("Session string has been saved to session.txt")
       print(session_string)
-  ```
-- Enable the worker after deploy the project to Heroku
-- Send `!join` to a voice chat enabled group chat from userbot account itself or its contacts
-- Reply to an audio with `/play` to start playing it in the voice chat, every member of the group
-  can use the `!play` and other common commands now, check `!help` for more commands
+   ```
+- 将项目部署到 Heroku 后启用工作人员
+- 从用户机器人帐户本身或其联系人发送“！加入”到启用语音聊天的群聊
+- 使用 `/play` 回复音频以开始在语音聊天中播放，组中的每个成员
+   现在可以使用 `!play` 和其他常用命令，查看 `!help` 了解更多命令
 
-There are some other branchs for other plugins,
-you can press the "Deploy to Heroku" button there to deploy it as well.
+其他插件还有一些其他分支，
+您也可以在此处按“部署到 Heroku”按钮来部署它。
+## 介绍
 
-## Introduction
+**特色**
 
-**Features**
+- 播放列表，队列
+- 当播放列表中只有一首曲目时循环播放一首曲目
+- 自动下载播放列表中前两首曲目的音频
+   确保流畅播放
+- 自动固定当前播放曲目
+- 显示音频的当前播放位置
 
-- Playlist, queue
-- Loop one track when there is only one track in the playlist
-- Automatically downloads audio for the first two tracks in the playlist
-  to ensure smooth playing
-- Automatically pin the current playing track
-- Show current playing position of the audio
+**播放插件怎么使用**
 
-**How to Use the Player plugin**
+1. 启动机器人
+2. 从用户机器人帐户本身发送`!join`到启用语音聊天的群聊
+    或其联系人，请务必将机器人帐户设置为组管理员，并且
+    至少给它以下权限：
+- 删除消息
+    - 管理语音聊天（可选）
+3. 使用 `/play` 回复音频以开始在语音聊天中播放，每个
+    群组成员现在可以使用常用命令，例如`/play`、`/current`和`!help`。
+4. 查看 `!help` 获取更多命令
+5. 
+**命令**
 
-1. Start the userbot
-2. send `!join` to a voice chat enabled group chat from userbot account itself
-   or its contacts, be sure to make the userbot account as group admin and
-   give it at least the following permissions:
-   - Delete messages
-   - Manage voice chats (optional)
-3. reply to an audio with `/play` to start playing it in the voice chat, every
-   member of the group can use common commands such like `/play`, `/current` and `!help` now.
-4. check `!help` for more commands
+主要插件是`vc.player`，它具有以下命令命令和管理命令。
+启动机器人后，从 userbot 帐户发送 `!join` 到启用语音聊天的群聊
+它自己或它的联系人，然后像`/play`和`/current`这样的常用命令将可用
+给群内的每一位成员。发送 `!help` 以检查更多命令。
 
-**Commands**
+- 常用命令，可供当前语音聊天的群组成员使用
+- 以 /（斜线）或 ! （感叹号）开始
 
-The main plugin is `vc.player` which has the following command commands and admin commands.
-After start the bot, send `!join` to a voice chat enabeld group chat from userbot account
-itself or its contacts, and then common commands like `/play` and `/current` will be available
-to every member of the group. send `!help` to check more commands.
+|常用命令 |说明 |
+|-----------------|------------------------------- --------------------------|
+| /play |回复音频以播放/queue，或显示播放列表 |
+| /current |显示当前曲目的当前播放时间 |
+| /repo |显示用户机器人的 git 存储库 |
+| !help |显示命令帮助 |
 
-- Common commands, available to group members of current voice chat
-- starts with / (slash) or ! (exclamation mark)
+- 管理员命令，可供用户机器人帐户本身及其联系人使用
+- 以!开始 （感叹号）
 
-| Common Commands | Description                                            |
-|-----------------|--------------------------------------------------------|
-| /play           | reply with an audio to play/queue it, or show playlist |
-| /current        | show current playing time of current track             |
-| /repo           | show git repository of the userbot                     |
-| !help           | show help for commands                                 |
+|管理命令 |说明 |
+|----------------|-------------------------------- --|
+| !skip [n] ... |跳过当前或 n 其中 n >= 2 |
+| !join |加入当前群组的语音聊天 |
+| !leave |离开当前语音聊天 |
+| !vc |检查加入了哪个VC |
+| !stop |停止播放|
+| !replay |从头开始玩|
+| !clean |删除未使用的 RAW PCM 文件 |
+| !pause |暂停播放 |
+| !resume |继续播放|
+| !mute |使 VC 用户机器人静音 |
+| !unmute |取消静音 VC 用户机器人 |
 
-- Admin commands, available to userbot account itself and its contacts
-- starts with ! (exclamation mark)
+- 来自其他插件的命令，仅对 userbot 帐户本身可用
 
-| Admin Commands | Description                      |
-|----------------|----------------------------------|
-| !skip [n] ...  | skip current or n where n >= 2   |
-| !join          | join voice chat of current group |
-| !leave         | leave current voice chat         |
-| !vc            | check which VC is joined         |
-| !stop          | stop playing                     |
-| !replay        | play from the beginning          |
-| !clean         | remove unused RAW PCM files      |
-| !pause         | pause playing                    |
-| !resume        | resume playing                   |
-| !mute          | mute the VC userbot              |
-| !unmute        | unmute the VC userbot            |
+|插件 |命令 |说明 |
+|---------|---------|---------|
+|ping | !ping |显示 ping 时间 |
+|uptime | !uptime |显示用户机器人正常运行时间 |
+|sysinfo | !sysinfo |显示系统信息 |
 
-- Commands from other plugins, available only to userbot account itself
+＃＃ 要求
 
-| Plugin  | Commands | Description         |
-|---------|----------|---------------------|
-| ping    | !ping    | show ping time      |
-| uptime  | !uptime  | show userbot uptime |
-| sysinfo | !sysinfo | show system info    |
-
-## Requirements
-
-- Python 3.6 or higher
-- A [Telegram API key](https://docs.pyrogram.org/intro/quickstart#enjoy-the-api) and a Telegram account
-- Choose plugins you need, install dependencies which listed above and run `pip install -U -r requirements.txt` to install python package dependencies as well
+- Python 3.6 或更高版本
+- [Telegram API 密钥](https://docs.pyrogram.org/intro/quickstart#enjoy-the-api) 和 Telegram 帐户
+- 选择你需要的插件，安装上面列出的依赖项并运行`pip install -U -r requirements.txt`来安装python包依赖项
 - [FFmpeg](https://www.ffmpeg.org/)
 
-## Run
+＃＃ 运行
 
-Choose one of the two methods and run the userbot with
-`python userbot.py`, stop with <kbd>CTRL+c</kbd>. The following example
-assume that you were going to use `vc.player` and `ping` plugin, replace
-`api_id`, `api_hash` to your own value.
+选择两种方法之一并运行用户机器人
+`python3 userbot.py`，用 <kbd>CTRL+c</kbd> 停止。下面的例子
+假设你要使用 `vc.player` 和 `ping` 插件，替换
+`api_id`, `api_hash` 到你自己的值。
 
-### Method 1: use config.ini
+### 方法一：使用config.ini
 
-Create a `config.ini` file
+创建一个`config.ini`文件
 
 ```
 [pyrogram]
@@ -130,9 +129,9 @@ include =
     sysinfo
 ```
 
-### Method 2: write your own userbot.py
+### 方法2：自己写一个userbot.py
 
-Replace the file content of `userbot.py`
+替换`userbot.py`的文件内容
 
 ```
 from pyrogram import Client, idle
@@ -150,17 +149,17 @@ plugins = dict(
 
 app = Client("tgvc", api_id, api_hash, plugins=plugins)
 app.start()
-print('>>> USERBOT STARTED')
+print('>>> 机器人已启动')
 idle()
 app.stop()
-print('\n>>> USERBOT STOPPED')
+print('\n>>> 机器人已停止')
 ```
 
-## Notes
+## 备注
 
-- Read module docstrings of [plugins/](plugins) you are going to use at
-  the beginning of the file for extra notes
+- 阅读您将要使用的 [plugins/](plugins) 的模块文档字符串
+  额外注释的文件开头
 
-# License
+＃ 执照
 
-AGPL-3.0-or-later
+AGPL-3.0 或更高版本
