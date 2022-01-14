@@ -1,20 +1,20 @@
-"""Play and Control Audio playing in Telegram Voice Chat
+"""在 Telegram 语音聊天中播放和控制音频播放
 
-Dependencies:
+依赖项：
 - ffmpeg
 
-Required group admin permissions:
-- Delete messages
-- Manage voice chats (optional)
+所需的组管理员权限：
+- 删除消息
+- 管理语音聊天（可选）
 
-How to use:
-- Start the userbot
-- send !join to a voice chat enabled group chat
-  from userbot account itself or its contacts
-- reply to an audio with /play to start playing
-  it in the voice chat, every member of the group
-  can use the !play command now
-- check !help for more commands
+如何使用：
+- 启动用户机器人
+- 发送！加入启用语音聊天的群聊
+   来自用户机器人帐户本身或其联系人
+- 使用 /play 回复音频以开始播放
+   它在语音聊天中，群里的每个成员
+   现在可以使用 !play 命令
+- 查看 !help 获取更多命令
 """
 import os
 import asyncio
@@ -27,37 +27,37 @@ import ffmpeg
 
 DELETE_DELAY = 8
 
-USERBOT_HELP = f"""{emoji.LABEL}  **Common Commands**:
-__available to group members of current voice chat__
-__starts with / (slash) or ! (exclamation mark)__
+USERBOT_HELP = f"""{emoji.LABEL} **常用命令**：
+__可供当前语音聊天的群组成员使用__
+__ 以 /（斜杠）或 !（感叹号）开头__
 
-/play  reply with an audio to play/queue it, or show playlist
-/current  show current playing time of current track
-/repo  show git repository of the userbot
-`!help`  show help for commands
+/play 用音频回复以播放/排队，或显示播放列表
+/current 显示当前曲目的当前播放时间
+/repo 显示用户机器人的 git 存储库
+`!help` 显示命令的帮助
 
 
-{emoji.LABEL}  **Admin Commands**:
-__available to userbot account itself and its contacts__
-__starts with ! (exclamation mark)__
+{emoji.LABEL} **管理命令**：
+__可供用户机器人帐户本身及其联系人使用__
+__用!（感叹号）开头__
 
-`!skip` [n] ...  skip current or n where n >= 2
-`!join`  join voice chat of current group
-`!leave`  leave current voice chat
-`!vc`  check which VC is joined
-`!stop`  stop playing
-`!replay`  play from the beginning
-`!clean`  remove unused RAW PCM files
-`!pause` pause playing
-`!resume` resume playing
-`!mute`  mute the VC userbot
-`!unmute`  unmute the VC userbot
+`!skip` [n] ... 跳过当前或 n 其中 n >= 2
+`!join` 加入当前群组的语音聊天
+`!leave` 离开当前语音聊天
+`!vc` 检查加入了哪个 VC
+`!stop` 停止播放
+`!replay` 从头开始播放
+`!clean` 删除未使用的 RAW PCM 文件
+`!pause` 暂停播放
+`!resume` 继续播放
+`!mute` 使 VC 用户机器人静音
+`!unmute` 取消 VC 用户机器人的静音
 """
 
-USERBOT_REPO = f"""{emoji.ROBOT} **Telegram Voice Chat UserBot**
-
-- Repository: [GitHub](https://github.com/callsmusic/tgvc-userbot)
-- License: AGPL-3.0-or-later"""
+USERBOT_REPO = f"""{emoji.ROBOT} **电报语音聊天用户机器人**
+- 原版：[GitHub](https://github.com/callsmusic/tgvc-userbot)
+- 中文版：[GitHub](https://github.com/mengxin239/tgvc-chinese)
+- 许可证：AGPL-3.0 或更高版本"""
 
 
 # - Pyrogram filters
@@ -109,12 +109,12 @@ class MusicPlayer(object):
     async def send_playlist(self):
         playlist = self.playlist
         if not playlist:
-            pl = f"{emoji.NO_ENTRY} empty playlist"
+            pl = f"{emoji.NO_ENTRY} 播放列表是空的哎.."
         else:
             if len(playlist) == 1:
-                pl = f"{emoji.REPEAT_SINGLE_BUTTON} **Playlist**:\n"
+                pl = f"{emoji.REPEAT_SINGLE_BUTTON} **播放列表**:\n"
             else:
-                pl = f"{emoji.PLAY_BUTTON} **Playlist**:\n"
+                pl = f"{emoji.PLAY_BUTTON} **播放列表**:\n"
             pl += "\n".join([
                 f"**{i}**. **[{x.audio.title}]({x.link})**"
                 for i, x in enumerate(playlist)
@@ -134,9 +134,9 @@ mp = MusicPlayer()
 async def network_status_changed_handler(gc: GroupCall, is_connected: bool):
     if is_connected:
         mp.chat_id = int("-100" + str(gc.full_chat.id))
-        await send_text(f"{emoji.CHECK_MARK_BUTTON} joined the voice chat")
+        await send_text(f"{emoji.CHECK_MARK_BUTTON} 已加入语音聊天")
     else:
-        await send_text(f"{emoji.CROSS_MARK_BUTTON} left the voice chat")
+        await send_text(f"{emoji.CROSS_MARK_BUTTON} 已退出语音聊天")
         mp.chat_id = None
 
 
@@ -168,7 +168,7 @@ async def play_track(client, m: Message):
     playlist.append(m_reply)
     if len(playlist) == 1:
         m_status = await m.reply_text(
-            f"{emoji.INBOX_TRAY} downloading and transcoding..."
+            f"{emoji.INBOX_TRAY} 正在下载音频文件并转码...."
         )
         await download_audio(playlist[0])
         group_call.input_filename = os.path.join(
@@ -240,7 +240,7 @@ async def skip_track(client, m: Message):
             reply = await m.reply_text("\n".join(text))
             await mp.send_playlist()
         except (ValueError, TypeError):
-            reply = await m.reply_text(f"{emoji.NO_ENTRY} invalid input",
+            reply = await m.reply_text(f"{emoji.NO_ENTRY} 这都啥啊，这个是让你这么用的吗",
                                        disable_web_page_preview=True)
         await _delay_delete_messages((reply, m), DELETE_DELAY)
 
@@ -252,7 +252,7 @@ async def join_group_call(client, m: Message):
     group_call = mp.group_call
     group_call.client = client
     if group_call.is_connected:
-        await m.reply_text(f"{emoji.ROBOT} already joined a voice chat")
+        await m.reply_text(f"{emoji.ROBOT} 已经加入一个了")
         return
     await group_call.start(m.chat.id)
     await m.delete()
@@ -279,12 +279,12 @@ async def list_voice_chat(client, m: Message):
         chat_id = int("-100" + str(group_call.full_chat.id))
         chat = await client.get_chat(chat_id)
         reply = await m.reply_text(
-            f"{emoji.MUSICAL_NOTES} **currently in the voice chat**:\n"
+            f"{emoji.MUSICAL_NOTES} **已经加入了**:\n"
             f"- **{chat.title}**"
         )
     else:
         reply = await m.reply_text(emoji.NO_ENTRY
-                                   + "didn't join any voice chat yet")
+                                   + "还没加入语音聊天呢...")
     await _delay_delete_messages((reply, m), DELETE_DELAY)
 
 
@@ -295,7 +295,7 @@ async def list_voice_chat(client, m: Message):
 async def stop_playing(_, m: Message):
     group_call = mp.group_call
     group_call.stop_playout()
-    reply = await m.reply_text(f"{emoji.STOP_BUTTON} stopped playing")
+    reply = await m.reply_text(f"{emoji.STOP_BUTTON} 停止播放")
     await mp.update_start_time(reset=True)
     mp.playlist.clear()
     await _delay_delete_messages((reply, m), DELETE_DELAY)
@@ -313,7 +313,7 @@ async def restart_playing(_, m: Message):
     await mp.update_start_time()
     reply = await m.reply_text(
         f"{emoji.COUNTERCLOCKWISE_ARROWS_BUTTON}  "
-        "playing from the beginning..."
+        "从头开始播放"
     )
     await _delay_delete_messages((reply, m), DELETE_DELAY)
 
@@ -325,7 +325,7 @@ async def restart_playing(_, m: Message):
 async def pause_playing(_, m: Message):
     mp.group_call.pause_playout()
     await mp.update_start_time(reset=True)
-    reply = await m.reply_text(f"{emoji.PLAY_OR_PAUSE_BUTTON} paused",
+    reply = await m.reply_text(f"{emoji.PLAY_OR_PAUSE_BUTTON} 已暂停",
                                quote=False)
     mp.msg['pause'] = reply
     await m.delete()
@@ -337,7 +337,7 @@ async def pause_playing(_, m: Message):
                    & filters.regex("^!resume"))
 async def resume_playing(_, m: Message):
     mp.group_call.resume_playout()
-    reply = await m.reply_text(f"{emoji.PLAY_OR_PAUSE_BUTTON} resumed",
+    reply = await m.reply_text(f"{emoji.PLAY_OR_PAUSE_BUTTON} 已重新开始播放",
                                quote=False)
     if mp.msg.get('pause') is not None:
         await mp.msg['pause'].delete()
@@ -373,7 +373,7 @@ async def clean_raw_pcm(client, m: Message):
 async def mute(_, m: Message):
     group_call = mp.group_call
     group_call.set_is_mute(True)
-    reply = await m.reply_text(f"{emoji.MUTED_SPEAKER} muted")
+    reply = await m.reply_text(f"{emoji.MUTED_SPEAKER} 已禁音")
     await _delay_delete_messages((reply, m), DELETE_DELAY)
 
 
@@ -384,7 +384,7 @@ async def mute(_, m: Message):
 async def unmute(_, m: Message):
     group_call = mp.group_call
     group_call.set_is_mute(False)
-    reply = await m.reply_text(f"{emoji.SPEAKER_MEDIUM_VOLUME} unmuted")
+    reply = await m.reply_text(f"{emoji.SPEAKER_MEDIUM_VOLUME} 解除禁音")
     await _delay_delete_messages((reply, m), DELETE_DELAY)
 
 
